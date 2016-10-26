@@ -1,0 +1,23 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo missing job size && exit 1
+echo "converting $1 files"
+
+soffice --version
+
+pkill -f soffice
+rm -rf ./pdf/*
+
+for i in $(seq 1 "$1")
+do
+  ( mkdir "./pdf/$i" && soffice --headless --nolockcheck --nodefault --norestore --convert-to pdf --outdir "./pdf/$i" "./example.odt" > /dev/null; echo "$i => $?" ) &
+done
+
+while true
+do
+  sleep 1
+  working=$(pgrep -f "office.*convert-to" | wc -l)
+  [ "$working" -eq 0 ] && break
+done
+
+echo "$(find ./pdf -name "*.pdf" | wc -l)" pdf generated

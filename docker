@@ -1,0 +1,4 @@
+#!/bin/sh
+
+[ "$1" = build ] && docker build -t pdf .
+[ "$1" = run ] && shift && docker run -t pdf "$@"
