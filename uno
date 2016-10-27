@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 [ -z "$1" ] && echo missing job size && exit 1
 echo "converting $1 files"
@@ -10,6 +10,7 @@ rm -rf ./pdf/*
 
 connection="pipe,name=trytond;urp;StarOffice.ComponentContext"
 unoconv --listener -c "$connection" &
+disown
 sleep 1
 
 for i in $(seq 1 "$1")
@@ -17,11 +18,9 @@ do
   ( unoconv --no-launch -c "$connection" -f pdf -o "./pdf/$i.pdf" ./example.odt > /dev/null; echo "$i => $?" ) &
 done
 
-while true
+for pid in $(jobs -p)
 do
-  sleep 1
-  working=$(pgrep -f "unoconv --no-launch" | wc -l)
-  [ "$working" -eq 0 ] && break
+  wait "$pid"
 done
 
 echo "$(find ./pdf -name "*.pdf" | wc -l)" pdf generated

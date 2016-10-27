@@ -1,6 +1,6 @@
 from alpine:3.4
 
-RUN apk add --no-cache libreoffice
+RUN apk add --no-cache bash libreoffice
 
 COPY . /root
 

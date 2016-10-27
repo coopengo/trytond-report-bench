@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 [ -z "$1" ] && echo missing job size && exit 1
 echo "converting $1 files"
@@ -15,11 +15,9 @@ do
   ( unoconv -c "$connection" -f pdf -o "./pdf/$i.pdf" ./example.odt > /dev/null; echo "$i => $?" ) &
 done
 
-while true
+for pid in $(jobs -p)
 do
-  sleep 1
-  working=$(pgrep -f unoconv | wc -l)
-  [ "$working" -eq 0 ] && break
+  wait "$pid"
 done
 
 echo "$(find ./pdf -name "*.pdf" | wc -l)" pdf generated
