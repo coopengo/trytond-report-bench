@@ -1,4 +1,4 @@
-from alpine:3.4
+from alpine:3.14.4
 
 RUN apk add --no-cache bash libreoffice
 
